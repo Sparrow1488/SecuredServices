@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SecuredServices.Core.Exceptions;
 using SecuredServices.Example.Api.Data;
-using SecuredServices.Example.Api.Models;
-using SecuredServices.Example.Api.Roles;
+using SecuredServices.Example.Api.Services;
 
 namespace SecuredServices.Example.Api.Controllers
 {
@@ -9,34 +9,39 @@ namespace SecuredServices.Example.Api.Controllers
     [Route("[controller]")]
     public class GroupsController : Controller
     {
-        public GroupsController(ApplicationDbContext context)
+        public GroupsController(
+            ApplicationDbContext context,
+            GroupsService service,
+            IHttpContextAccessor accessor)
         {
             _context = context;
+            _service = service;
         }
 
         private readonly ApplicationDbContext _context;
+        private readonly GroupsService _service;
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(
+            [FromQuery]int userId, [FromQuery]int groupId)
         {
-            var user = new User() { Name = "User-name" };
-            var group = new Group()
+            var editedGroup = _context.Groups.First(x => x.Id == groupId).Clone();
+            editedGroup.Title = "Changed title " + Random.Shared.Next();
+            try
             {
-                Title = "TestGroup",
-                Description = "No desc",
-                Members = new GroupMember[] {
-                    new GroupMember() {
-                        Id = user.Id,
-                        Role = GroupRole.Editor
+                _service.Edit(editedGroup);
+            }
+            catch (AccessDeniedException ex)
+            {
+                return BadRequest(new
+                {
+                    Ok = false,
+                    Errors = new string[]
+                    {
+                        ex.Message
                     }
-                }
-            };
-            _context.Users.Add(user);
-            _context.Groups.Add(group);
-
-            user.GroupMemberId = group.Members.Where(x => x.Id == user.Id).First().Id;
-            _context.Users.Update(user);
-            _context.SaveChanges();
+                });
+            }
 
             return Ok(new
             {
