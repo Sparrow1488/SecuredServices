@@ -17,6 +17,7 @@ namespace SecuredServices.Core.Tests.TestEntities
         public bool IsPrivate { get; set; } = false;
 
         public IEnumerable<GroupMember> Members { get; set; }
+        public IEnumerable<User> Users { get; set; }
 
         public Group Clone()
         {

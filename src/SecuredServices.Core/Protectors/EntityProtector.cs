@@ -98,7 +98,7 @@ namespace SecuredServices.Core.Protectors
 
         public bool IsProtected(TEntity toCheck)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

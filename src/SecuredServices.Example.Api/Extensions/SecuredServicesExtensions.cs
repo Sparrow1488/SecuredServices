@@ -17,5 +17,14 @@ namespace SecuredServices.Example.Api.Extensions
             services.AddScoped<IEntityProtector<Group>, EntityProtector<Group>>();
             return services;
         }
+
+        public static IServiceCollection UseAlternativeGroupSecuredServices(this IServiceCollection services)
+        {
+            services.AddScoped<IPolicyProvider, PolicyProvider>(
+                        x => new PolicyProvider(typeof(GroupRole)));
+            services.AddScoped<ISessionManager, QuerySessionManager>();
+            services.AddScoped<IEntityProtector<Group>, EntityProtector<Group>>();
+            return services;
+        }
     }
 }

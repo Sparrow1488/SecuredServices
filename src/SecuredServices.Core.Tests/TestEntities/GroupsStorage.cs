@@ -14,6 +14,10 @@ namespace SecuredServices.Core.Tests.TestEntities
                 { 
                     new GroupMember() { Id = 1, GroupRole = TestGroupRole.User },
                     new GroupMember() { Id = 2, GroupRole = TestGroupRole.Editor },
+                },
+                Users = new User[]
+                {
+                    new User() { Id = 5 }
                 }
             }
         };

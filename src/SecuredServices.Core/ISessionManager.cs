@@ -5,7 +5,8 @@
     /// </summary>
     public interface ISessionManager
     {
-        public bool IsAuthorized { get; }
+        public int ClientId { get; }
         public string Role { get; }
+        public bool IsAuthorized { get; }
     }
 }

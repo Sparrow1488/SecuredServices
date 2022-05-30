@@ -4,17 +4,14 @@ namespace SecuredServices.Core.Protectors.Processors
 {
     public abstract class ProtectProcessor<TEntity>
     {
-        public ProtectProcessor(ProcessorContext<TEntity> context)
+        public ProtectProcessor(ISessionManager session) 
         {
-            Context = context;
+            Session = session;
         }
 
         public abstract Type HandleAttributeType { get; }
-        public ProcessorContext<TEntity> Context { get; }
+        protected ISessionManager Session { get; }
 
-        public void HandleEntity()
-        {
-
-        }
+        public abstract bool IsProtected(TEntity changed, TEntity initial);
     }
 }

@@ -11,10 +11,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("SecuredServicesDatabase"));
 
 builder.Services.AddTransient<DataInit>();
-builder.Services!.BuildServiceProvider()!.GetService<DataInit>()!.Init();
+builder.Services.BuildServiceProvider()!.GetService<DataInit>()!.Init();
 
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.UseGroupSecuredServices();
+builder.Services.UseAlternativeGroupSecuredServices();
 builder.Services.AddTransient<GroupsService>();
 
 var app = builder.Build();

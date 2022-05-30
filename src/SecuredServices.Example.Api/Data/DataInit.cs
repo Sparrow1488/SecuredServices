@@ -29,9 +29,11 @@ namespace SecuredServices.Example.Api.Data
                        Id = user2.Id,
                        Role = GroupRole.Member
                     }
+                },
+                Users = new User[] {
+                    user
                 }
             };
-            _context.Users.Add(user);
             _context.Users.Add(user2);
             _context.Groups.Add(group);
             _context.SaveChanges();

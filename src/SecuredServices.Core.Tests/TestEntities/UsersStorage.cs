@@ -26,7 +26,12 @@ namespace SecuredServices.Core.Tests.TestEntities
             {
                 Id = 4,
                 Role = TestSystemRole.Creator
-            }
+            },
+            new User()
+            {
+                Id = 5,
+                Role = TestSystemRole.User
+            },
         };
     }
 }

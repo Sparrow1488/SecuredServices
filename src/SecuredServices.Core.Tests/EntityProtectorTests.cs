@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using SecuredServices.Core.Protectors;
+using SecuredServices.Core.Protectors.Processors;
 using SecuredServices.Core.Providers;
 using SecuredServices.Core.Tests.TestEntities;
 using SecuredServices.Core.Tests.TestPolicy.Roles;
+using SecuredServices.Core.Tests.TestProcessors;
 using SecuredServices.Core.Tests.TestSessionManagers;
 using System.Linq;
 

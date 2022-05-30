@@ -11,6 +11,8 @@ namespace SecuredServices.Example.Api.Models
         public string Description { get; set; }
 
         public IEnumerable<GroupMember> Members { get; set; }
+        // данное свойство приведено в качестве примера, чтобы показать альтернативную возможность использования SecuredServices
+        public IEnumerable<User> Users { get; set; } 
 
         public Group Clone()
         {

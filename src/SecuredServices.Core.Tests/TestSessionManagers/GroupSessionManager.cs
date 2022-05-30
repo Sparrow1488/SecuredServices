@@ -18,5 +18,6 @@ namespace SecuredServices.Core.Tests.TestSessionManagers
 
         public bool IsAuthorized => _member == null;
         public string Role => _member.GroupRole;
+        public int ClientId => _member.Id;
     }
 }

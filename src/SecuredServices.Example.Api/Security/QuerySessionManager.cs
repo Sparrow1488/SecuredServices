@@ -40,5 +40,7 @@ namespace SecuredServices.Example.Api.Security
 
         public bool IsAuthorized => _userId > 0;
         public string Role { get; set; }
+
+        public int ClientId => throw new NotImplementedException();
     }
 }
