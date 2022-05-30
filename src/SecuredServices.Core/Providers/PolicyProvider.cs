@@ -8,7 +8,7 @@ namespace SecuredServices.Core.Providers
 {
     public class PolicyProvider : IPolicyProvider
     {
-        public PolicyProvider(Type entityWithPolicies)
+        public PolicyProvider(Type entityWithPolicies) // TODO: добавить поддержку нескольких типов, поддерживающих PolicyAttribute (ex. GroupRole, SystemRole)
         {
             _entityWithPolicies = entityWithPolicies;
             _policiesWithRanks = GetPolicies();
