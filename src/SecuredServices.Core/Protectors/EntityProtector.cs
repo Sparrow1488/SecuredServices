@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SecuredServices.Core.Attributes;
+using SecuredServices.Core.Messages;
 using SecuredServices.Core.Protectors.Processors;
 using SecuredServices.Core.Providers;
 using System;
@@ -31,6 +32,8 @@ namespace SecuredServices.Core.Protectors
         private readonly IServiceProvider _services;
 
         public ISessionManager Session { get; }
+
+        public IEnumerable<IProtectorMessage> Messages => throw new NotImplementedException();
 
         public bool IsProtected(TEntity toProtect, TEntity initial)
         {
