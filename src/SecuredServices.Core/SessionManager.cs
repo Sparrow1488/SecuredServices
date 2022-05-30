@@ -12,9 +12,9 @@ namespace SecuredServices.Core
             UpdateSession();
         }
 
-        public bool IsAuthorized { get; protected set; }
-        public string Role { get; protected set; }
-        public int ClientId { get; protected set; }
+        public bool IsAuthorized { get; set; }
+        public string Role { get; set; }
+        public int ClientId { get; set; }
 
         public virtual void UpdateSession() { }
         public virtual Task UpdateSessionAsync() =>

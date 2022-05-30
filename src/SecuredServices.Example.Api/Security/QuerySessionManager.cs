@@ -36,5 +36,15 @@ namespace SecuredServices.Example.Api.Security
         public bool IsAuthorized => _userId > 0;
         public string Role { get; set; }
         public int ClientId => _userId;
+
+        public void UpdateSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateSessionAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

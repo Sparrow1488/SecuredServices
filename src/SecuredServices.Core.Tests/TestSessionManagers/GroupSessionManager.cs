@@ -1,5 +1,6 @@
 ﻿using SecuredServices.Core.Tests.TestEntities;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SecuredServices.Core.Tests.TestSessionManagers
 {
@@ -19,5 +20,15 @@ namespace SecuredServices.Core.Tests.TestSessionManagers
         public bool IsAuthorized => _member == null;
         public string Role => _member.GroupRole;
         public int ClientId => _member.Id;
+
+        public void UpdateSession()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task UpdateSessionAsync()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
