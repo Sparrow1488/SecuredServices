@@ -22,8 +22,7 @@ namespace SecuredServices.Example.Api.Controllers
         private readonly GroupsService _service;
 
         [HttpGet]
-        public IActionResult Index(
-            [FromQuery]int userId, [FromQuery]int groupId)
+        public IActionResult Index([FromQuery]int userId, [FromQuery]int groupId)
         {
             var editedGroup = _context.Groups.First(x => x.Id == groupId).Clone();
             editedGroup.Title = "Changed title " + Random.Shared.Next();
@@ -36,17 +35,11 @@ namespace SecuredServices.Example.Api.Controllers
                 return BadRequest(new
                 {
                     Ok = false,
-                    Errors = new string[]
-                    {
-                        ex.Message
-                    }
+                    Errors = new string[] { ex.Message }
                 });
             }
 
-            return Ok(new
-            {
-                Ok = true
-            });
+            return Ok(new { Ok = true });
         }
     }
 }

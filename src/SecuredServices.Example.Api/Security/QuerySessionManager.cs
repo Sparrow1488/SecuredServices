@@ -31,16 +31,10 @@ namespace SecuredServices.Example.Api.Security
             }
         }
 
-        public void Authorize()
-        {
-
-        }
-
         private int _userId;
 
         public bool IsAuthorized => _userId > 0;
         public string Role { get; set; }
-
-        public int ClientId => throw new NotImplementedException();
+        public int ClientId => _userId;
     }
 }
