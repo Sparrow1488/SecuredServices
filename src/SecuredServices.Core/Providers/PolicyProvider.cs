@@ -9,10 +9,16 @@ namespace SecuredServices.Core.Providers
 {
     public class PolicyProvider : IPolicyProvider
     {
-        public PolicyProvider(Type entityWithPolicies) // TODO: добавить поддержку нескольких типов, поддерживающих PolicyAttribute (ex. GroupRole, SystemRole)
+        // TODO: добавить поддержку нескольких типов, поддерживающих PolicyAttribute (ex. GroupRole, SystemRole)
+        public PolicyProvider(Type entityWithPolicies) 
         {
             _entityWithPolicies = entityWithPolicies;
             _policiesWithRanks = GetPolicies();
+        }
+
+        public PolicyProvider(IEnumerable<Type> entitiesWithPolicies)
+        {
+
         }
 
         private readonly IDictionary<string, int> _policiesWithRanks;
@@ -54,6 +60,11 @@ namespace SecuredServices.Core.Providers
                 errorMessage = errorMessage ?? $"Can't be use one or more policies from current type {_entityWithPolicies.ToString()}";
                 throw new FailedUsePolicyException(errorMessage);
             }
+        }
+
+        public int GetPolicyRank(string policy, Type policyType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

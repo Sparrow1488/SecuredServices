@@ -2,13 +2,13 @@
 
 namespace SecuredServices.Core.Tests.TestPolicy.Roles
 {
-    internal class TestDoubleRole
+    internal class TestOneRole
     {
         [Policy(rank: 1)]
         public const string SomeRole = nameof(SomeRole);
     }
 
-    internal class TestDoubleTwoRole
+    internal class TestTwoRole
     {
         [Policy(rank: 1)]
         public const string SomeRole = nameof(SomeRole);
