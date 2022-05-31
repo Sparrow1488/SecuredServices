@@ -1,34 +1,31 @@
 ﻿using SecuredServices.Core.Tests.TestEntities;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SecuredServices.Core.Tests.TestSessionManagers
 {
-    internal class GroupSessionManager : ISessionManager
+    internal class GroupSessionManager : SessionManager
     {
         public GroupSessionManager(
             int currentUserId,
             int currentGroupId,
-            GroupsStorage storage) // можно также получить из HttpContext, в после из базы данных (если работаем через AspNetCore)
+            GroupsStorage storage)
         {
             var group = storage.Groups.First(x => x.Id == currentGroupId);
             _member = group.Members.First(x => x.Id == currentUserId);
+            UpdateSession();
         }
 
         private readonly GroupMember _member;
 
-        public bool IsAuthorized => _member == null;
-        public string Role => _member.GroupRole;
-        public int ClientId => _member.Id;
+        public override bool IsAuthorized => _member.Id > 0;
 
-        public void UpdateSession()
+        public override void UpdateSession()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task UpdateSessionAsync()
-        {
-            throw new System.NotImplementedException();
+            UserModel.Identificator = _member.Id.ToString();
+            UserModel.Policies = new string[]
+            {
+                _member.GroupRole
+            };
         }
     }
 }

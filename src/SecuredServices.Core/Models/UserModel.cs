@@ -4,7 +4,7 @@ namespace SecuredServices.Core.Models
 {
     public abstract partial class UserModel
     {
-        public virtual string Identificator { get; protected set; }
-        public IEnumerable<string> Policies { get; protected set; }
+        public virtual string Identificator { get; set; }
+        public virtual IEnumerable<string> Policies { get; set; }
     }
 }

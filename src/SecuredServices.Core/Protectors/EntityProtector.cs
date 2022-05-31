@@ -34,6 +34,8 @@ namespace SecuredServices.Core.Protectors
 
         public bool IsProtected(TEntity toProtect, TEntity initial)
         {
+            if (!Session.IsAuthorized)
+                Session.UpdateSession();
             _currentEntityCheck = toProtect;
             _initialEntityCheck = initial;
             bool isProtected = true;

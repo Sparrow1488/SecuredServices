@@ -1,29 +1,21 @@
-﻿using System.Threading.Tasks;
-
-namespace SecuredServices.Core.Tests.TestSessionManagers
+﻿namespace SecuredServices.Core.Tests.TestSessionManagers
 {
-    internal class AlternativeGroupSessionManager : ISessionManager
+    internal class AlternativeGroupSessionManager : SessionManager
     {
         public AlternativeGroupSessionManager(
             int currentUserId)
         {
             _currentUserId = currentUserId;
+            UpdateSession();
         }
 
         private readonly int _currentUserId;
+        public override bool IsAuthorized => _currentUserId > 0;
 
-        public int ClientId => _currentUserId;
-        public string Role => string.Empty;
-        public bool IsAuthorized => _currentUserId > 0;
-
-        public void UpdateSession()
+        public override void UpdateSession()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task UpdateSessionAsync()
-        {
-            throw new System.NotImplementedException();
+            UserModel.Identificator = _currentUserId.ToString();
+            base.UpdateSession();
         }
     }
 }

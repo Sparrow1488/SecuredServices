@@ -59,11 +59,6 @@ namespace SecuredServices.Core.Tests
             return groupsStorage.Groups.First(x => x.Id == id);
         }
 
-        private User GetUserById(int id)
-        {
-            var usersStorage = _scope.ServiceProvider.GetService<UsersStorage>();
-            return usersStorage.Users.First(x => x.Id == id);
-        }
         private void RegisterGroupSessionManager(int currentUser)
         {
             _services.AddTransient<ISessionManager, AlternativeGroupSessionManager>(
