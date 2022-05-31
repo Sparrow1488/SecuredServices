@@ -3,7 +3,7 @@ using SecuredServices.Example.Api.Data;
 
 namespace SecuredServices.Example.Api.Security
 {
-    public class QuerySessionManager : ISessionManager
+    public class QuerySessionManager : SessionManager
     {
         public QuerySessionManager(
             IServiceProvider services,
@@ -24,7 +24,10 @@ namespace SecuredServices.Example.Api.Security
                         if (first is not null)
                         {
                             var groupMember = context.GroupMembers.Where(x => x.Id == _userId).FirstOrDefault();
-                            Role = groupMember?.Role ?? string.Empty;
+                            UserModel.Policies = new string[]
+                            {
+                                groupMember?.Role ?? string.Empty
+                            };
                         }
                     }
                 }
@@ -32,9 +35,6 @@ namespace SecuredServices.Example.Api.Security
         }
 
         private int _userId;
-
-        public bool IsAuthorized => _userId > 0;
-        public string Role { get; set; }
-        public int ClientId => _userId;
+        public override bool IsAuthorized => _userId > 0;
     }
 }

@@ -1,12 +1,28 @@
-﻿namespace SecuredServices.Core
+﻿using SecuredServices.Core.Models;
+using System.Threading.Tasks;
+
+namespace SecuredServices.Core
 {
-    /// <summary>
-    ///     Контекст с клиентом, который использует SecuredServices
-    /// </summary>
     public class SessionManager : ISessionManager
     {
-        public bool IsAuthorized { get; set; }
-        public string Role { get; set; }
-        public int ClientId { get; set; }
+        public SessionManager() { }
+
+        private UserModel _userModel;
+        private bool _isAuthorized;
+
+        public virtual bool IsAuthorized
+        {
+            get => _isAuthorized;
+            set => _isAuthorized = value;
+        }
+        public virtual UserModel UserModel
+        {
+            get => _userModel ?? (_userModel = new DefaultUserModel()); 
+            protected set => _userModel = value;
+        }
+
+        public virtual void UpdateSession() { }
+        public virtual async Task UpdateSessionAsync() =>
+            await Task.Run(() => UpdateSession());
     }
 }

@@ -1,50 +1,107 @@
-# SecuredServices (черновик)
-## Entities
+# SecuredServices
 
-**IEntityProtector** - производит проверку объекта, используя роли доступа (Policy)
+## Introduction
 
-**IManagerSession** - пользователь, вносящий изменения в объект, который необходимо защитить. Имеет роль доступа
+Use this library to protect from changes your application models by different users who should not. Perform simple setup so you don't have to worry about unauthorized changes.
 
-1. Знать, кто вносит изменения
-2. Узнать, какие права нужны для внесения изменений
-3. **Узнать, какие права есть у того, кто в носит изменения**
-4. Проверить, что хочет изменить пользователь
-5. Узнать, можно ли было вносить текущие изменения
-6. Сломать колени / Одобрить
+The main entities about you want know are
+
+1. **ISessionManager** - This interface provides information about a client that wants to modify a protected object.
+2. **IPolicyProvider** - This interface provides your application policies to use it in different Entity Protector's.
+3. **ProtectProcessor** - This class-protector secure your entity from changes.
+
+There are abstraction helps you to setup **EntityProtector** class.
 
 ```C#
-// current user can change group with id = 5
-var currentContext = HttpContext;
-var policies = new PolicyProvider(typeof(GroupRoles));
-var groupService = new GroupService(id: 1); // can't use
+public class EntityProtector<TEntity> : IEntityProtector<TEntity>
+```
 
-var serviceProtector = new ServiceProtector<GroupsService>(currentContext, policies);
-if(serviceProtector.CanAddChanges(groupService))
+## Usage
+
+For example, you have Group model with different properties: Id, Title, Description and Members. 
+
+```C#
+public class Group
 {
-    var group = groupService.Current.Title = "Changed Title";
-    groupService.SaveChanges(group);
-}
-else
-{
-    Log.Information("Current user can't be add changes in group (id = 1)");
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public IEnumerable<User> Members { get; set; }
 }
 ```
 
-## Идея
+The task says:
 
-Есть 3 обособленных звена, которые могут функционировать по отдельности
+> *"Only group members can change group information" @Customer*
 
-1 звено. Получает минимальную информацию о персоне, которой будет достаточно для определения уровня доступа к **защищенному объекту**
+Ok. Add attributes on properties
 
-2 звено. Защищенный объект - объект, к которому нужно перекрыть доступ определенным пользователям.
+```C#
+public class Group
+{
+    [ChangeProtection(SystemRole.Editor)]
+    public int Id { get; set; }
+    [ChangeProtection(SystemRole.Editor)]
+    public string Title { get; set; }
+    [ChangeProtection(SystemRole.Editor)]
+    public string Description { get; set; }
+    public IEnumerable<User> Members { get; set; }
+}
+```
 
-3 звено. Определение доступности. Берет уровень доступа текущего пользователя из **сессии**, получает защищенный объект и определяет, к какой информации текущий пользователь имеет доступ и выдает результат
+And user model (and roles) look like this:
 
-Все три звена могут быть объеденены в одном контейнере - EntityProtector. Он знает кто и к чему хочет получить доступ. А благодаря зарегистрированным обработчикам (звено 3) может правильно (в зависимости от задачи) сделать выводы. 
+```C#
+public class User
+{
+    public int Id { get; set; }
+    public string Role { get; set; } // SystemRole
+}
 
-### Как работает EntityProtector
+public class SystemRole
+{
+    [Policy(rank: 1)]
+    public const string User = nameof(User);
+    [Policy(rank: 2)]
+    public const string Moderator = nameof(Moderator);
+    [Policy(rank: 3)]
+    public const string Administrator = nameof(Administrator);
+    [Policy(rank: 4)]
+    public const string Creator = nameof(Creator);
+}
+```
 
-1. Получает в метод **IsProtected** два объекта: измененный и шаблонный (который был до изменения)
-2. Определяет, какие свойства должны быть защищены (помечены аттрибутами ChangeProtectionAttribute)
-3. Запускает обработчиков (по умолчанию метод IsChangeVerified), но по хорошему нужно сделать **ProtectProcessor**
-4. 
+*Firstly*, add **PolicyAttribute** (as shown above) on system roles, where we set rank number. Rank number is priority number of this role (than higher number, the more rights). 
+
+*Second*, implement SessionManager that will provide current client info.
+
+```C#
+internal class ApplicationSessionManager : SessionManager
+{
+    public ApplicationSessionManager() : base() { }
+
+    public override void UpdateSession()
+    {
+        // Here you can use the IHttpContextAccessor (asp.net), work with the database
+        // or something else (using constructor).
+        // For example:
+        UserModel.Policies = new string[] { TestSystemRole.User };
+        UserModel.Identificator = Guid.NewGuid().ToString();
+        IsAuthorized = true;
+    }
+}
+```
+
+*Third*, if we use Policies (roles) we need set it in **PolicyProvider**:
+
+```C#
+var policyProvider = new PolicyProvider(typeof(SystemRole));
+```
+
+In argument type should be variables with **PolicyAttribute**.
+
+*Fourthly*, ...
+
+## Dependencies
+
+\> Microsoft.Extensions.DependencyInjection.Abstractions → v6.0.0

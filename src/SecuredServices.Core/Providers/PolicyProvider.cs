@@ -22,6 +22,7 @@ namespace SecuredServices.Core.Providers
 
         public virtual int GetPolicyRank(string policy)
         {
+            policy = policy ?? string.Empty;
             _policiesWithRanks.TryGetValue(policy, out int policyRank);
             return policyRank;
         }

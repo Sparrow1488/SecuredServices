@@ -10,10 +10,6 @@ using System.Reflection;
 
 namespace SecuredServices.Core.Protectors
 {
-    /// <summary>
-    ///     4. Проверяет, что хочет изменить пользователь
-    ///     5. Узнает, можно ли было вносить текущие изменения
-    /// </summary>
     public class EntityProtector<TEntity> : IEntityProtector<TEntity>
     {
         public EntityProtector(
@@ -24,19 +20,22 @@ namespace SecuredServices.Core.Protectors
             Session = session;
             _policies = policies;
             _services = services;
+            _messages = new List<IProtectorMessage>();
         }
 
         private TEntity _currentEntityCheck;
         private TEntity _initialEntityCheck;
         private readonly IPolicyProvider _policies;
         private readonly IServiceProvider _services;
+        private readonly IList<IProtectorMessage> _messages;
 
         public ISessionManager Session { get; }
-
-        public IEnumerable<IProtectorMessage> Messages => throw new NotImplementedException();
+        public IEnumerable<IProtectorMessage> Messages => _messages;
 
         public bool IsProtected(TEntity toProtect, TEntity initial)
         {
+            if (!Session.IsAuthorized)
+                Session.UpdateSession();
             _currentEntityCheck = toProtect;
             _initialEntityCheck = initial;
             bool isProtected = true;
@@ -80,7 +79,8 @@ namespace SecuredServices.Core.Protectors
         private bool IsManagerPolicyGreaterOrEqual(string policy)
         {
             var isGreaterOrEqual = false;
-            var managerPolicyRank = _policies.GetPolicyRank(Session.Role);
+            var managerPolicy = Session.UserModel.Policies.SingleOrDefault() ?? string.Empty;
+            var managerPolicyRank = _policies.GetPolicyRank(managerPolicy);
             var currentPolicyRank = _policies.GetPolicyRank(policy);
             if (managerPolicyRank >= currentPolicyRank)
                 isGreaterOrEqual = true;

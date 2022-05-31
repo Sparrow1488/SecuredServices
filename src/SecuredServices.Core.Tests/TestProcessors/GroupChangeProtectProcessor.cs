@@ -22,11 +22,7 @@ namespace SecuredServices.Core.Tests.TestProcessors
         public override bool IsProtected(Group changed, Group initial)
         {
             var groupFromDb = _groupsStorage.Groups.First(x => x.Id == changed.Id);
-            if (groupFromDb.Users.Any(x => x.Id == Session.ClientId))
-            {
-                return true; // состоит в группе, поэтому разрешаем ему вносить изменения
-            }
-            return false; // не состоит в данной группе
+            return groupFromDb.Users.Any(x => x.Id == int.Parse(Session.UserModel.Identificator));
         }
     }
 }

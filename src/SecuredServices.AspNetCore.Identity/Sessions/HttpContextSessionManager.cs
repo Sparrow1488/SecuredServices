@@ -13,5 +13,15 @@ namespace SecuredServices.AspNetCore.Identity.Sessions
         public int ClientId => throw new NotImplementedException();
         public string Role => throw new NotImplementedException();
         public bool IsAuthorized => throw new NotImplementedException();
+
+        public void UpdateSession()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateSessionAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

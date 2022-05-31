@@ -94,11 +94,7 @@ namespace SecuredServices.Core.Tests
 
         private void RegisterSessionManager(string role = TestGroupRole.User)
         {
-            _services.AddTransient<ISessionManager, SessionManager>(x => new SessionManager()
-            {
-                IsAuthorized = true,
-                Role = role
-            });
+            _services.AddTransient<ISessionManager, RoleSessionManager>(x => new RoleSessionManager(string.Empty, role));
         }
 
         private void RegisterGroupSessionManager(int currentUserId, int groupId)
