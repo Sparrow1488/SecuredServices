@@ -37,7 +37,7 @@ namespace SecuredServices.Core.Tests
             var typeOfRolesSecond = typeof(TestTwoRole);
             var rolesTypes = new Type[] { typeOfRolesFirst, typeOfRolesSecond };
 
-            var policyProvider = new PolicyProviderFeature(rolesTypes);
+            var policyProvider = new PolicyProvider(rolesTypes);
 
             Assert.NotNull(policyProvider.Policies);
         }
@@ -47,7 +47,7 @@ namespace SecuredServices.Core.Tests
         {
             const int expectedPolicyRank = 1;
             var rolesTypes = CreatePoliciesTypes(typeof(TestOneRole), typeof(TestTwoRole));
-            var policyProvider = new PolicyProviderFeature(rolesTypes);
+            var policyProvider = new PolicyProvider(rolesTypes);
 
             var policyRank = policyProvider.GetPolicyRank(TestOneRole.SomeRole, rolesTypes.First());
 
@@ -55,14 +55,38 @@ namespace SecuredServices.Core.Tests
         }
 
         [Test]
-        public void GetPolicyRank_FullNameOfPolicyName_CorrectPolicyRank()
+        public void GetPolicyRank_FullNameOfPolicy_CorrectPolicyRank()
         {
             const int expectedPolicyRank = 1;
             var rolesTypes = CreatePoliciesTypes(typeof(TestOneRole), typeof(TestTwoRole));
-            var policyProvider = new PolicyProviderFeature(rolesTypes);
+            var policyProvider = new PolicyProvider(rolesTypes);
             var findPolicyFullName = $"{rolesTypes.First().Name}.{TestOneRole.SomeRole}";
 
             var policyRank = policyProvider.GetPolicyRank(findPolicyFullName);
+
+            Assert.AreEqual(expectedPolicyRank, policyRank);
+        }
+
+        [Test]
+        public void GetPolicyRank_NameOfPolicy_DefaultValueBecauseMoreThanOnePolicyType()
+        {
+            const int expectedDefaultPolicyRank = 0;
+            var rolesTypes = CreatePoliciesTypes(typeof(TestOneRole), typeof(TestTwoRole));
+            var policyProvider = new PolicyProvider(rolesTypes);
+
+            var policyRank = policyProvider.GetPolicyRank(TestOneRole.SomeRole);
+
+            Assert.AreEqual(expectedDefaultPolicyRank, policyRank);
+        }
+
+        [Test]
+        public void GetPolicyRank_NameOfPolicy_PolicyRankBecauseOnlyOnePolicyType()
+        {
+            const int expectedPolicyRank = 1;
+            var rolesTypes = CreatePoliciesTypes(typeof(TestOneRole));
+            var policyProvider = new PolicyProvider(rolesTypes);
+
+            var policyRank = policyProvider.GetPolicyRank(TestOneRole.SomeRole);
 
             Assert.AreEqual(expectedPolicyRank, policyRank);
         }
