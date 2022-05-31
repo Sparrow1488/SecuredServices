@@ -1,5 +1,6 @@
 ﻿using SecuredServices.Core.Attributes;
 using SecuredServices.Core.Protectors;
+using System;
 using System.Collections.Generic;
 
 namespace SecuredServices.Core.Providers
@@ -14,10 +15,21 @@ namespace SecuredServices.Core.Providers
         /// </summary>
         IEnumerable<string> Policies { get; }
         /// <summary>
-        ///     Set your policy rank using <see cref="PolicyAttribute"/>(rank)
+        ///     <para>
+        ///         Get your policy rank from <see cref="PolicyAttribute"/>(rank)
+        ///     </para>
+        ///     <para>
+        ///         But recommended to use is <seealso cref="GetPolicyRank(string, Type)"/>
+        ///     </para>
         /// </summary>
         /// <param name="policy">Policy that contains in <see cref="Policies"/></param>
         /// <returns>Policy rank number</returns>
         int GetPolicyRank(string policy);
+        /// <summary>
+        ///     Get your policy rank from <see cref="PolicyAttribute"/>(rank) in your <paramref name="policyType"/>
+        /// </summary>
+        /// <param name="policy">Policy that contains in <see cref="Policies"/></param>
+        /// <returns>Policy rank number</returns>
+        int GetPolicyRank(string policy, Type policyType);
     }
 }
