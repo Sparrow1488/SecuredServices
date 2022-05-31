@@ -1,7 +1,6 @@
 ﻿using SecuredServices.Core.Models;
 using SecuredServices.Core.Tests.TestPolicy.Roles;
 using System;
-using System.Threading.Tasks;
 
 namespace SecuredServices.Core.Tests.TestSessionManagers
 {
@@ -16,8 +15,5 @@ namespace SecuredServices.Core.Tests.TestSessionManagers
             IsAuthorized = true;
             base.UpdateSession();
         }
-
-        public override async Task UpdateSessionAsync() =>
-            await Task.Run(() => UpdateSession());
     }
 }
