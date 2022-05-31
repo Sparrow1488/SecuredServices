@@ -77,7 +77,8 @@ namespace SecuredServices.Core.Protectors
         private bool IsManagerPolicyGreaterOrEqual(string policy)
         {
             var isGreaterOrEqual = false;
-            var managerPolicyRank = _policies.GetPolicyRank(Session.Role);
+            var managerPolicy = Session.UserModel.Policies.SingleOrDefault() ?? string.Empty;
+            var managerPolicyRank = _policies.GetPolicyRank(managerPolicy);
             var currentPolicyRank = _policies.GetPolicyRank(policy);
             if (managerPolicyRank >= currentPolicyRank)
                 isGreaterOrEqual = true;

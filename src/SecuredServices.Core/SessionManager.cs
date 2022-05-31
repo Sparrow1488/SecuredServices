@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using SecuredServices.Core.Models;
+using System.Threading.Tasks;
 
 namespace SecuredServices.Core
 {
@@ -12,9 +13,19 @@ namespace SecuredServices.Core
             UpdateSession();
         }
 
-        public bool IsAuthorized { get; set; }
-        public string Role { get; set; }
-        public int ClientId { get; set; }
+        private UserModel _userModel;
+        private bool _isAuthorized;
+
+        public bool IsAuthorized
+        {
+            get => _isAuthorized;
+            set => _isAuthorized = value;
+        }
+        public UserModel UserModel
+        {
+            get => _userModel ?? (_userModel = new DefaultUserModel()); 
+            set => _userModel = value;
+        }
 
         public virtual void UpdateSession() { }
         public virtual Task UpdateSessionAsync() =>
