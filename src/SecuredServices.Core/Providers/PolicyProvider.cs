@@ -1,4 +1,5 @@
 ﻿using SecuredServices.Core.Attributes;
+using SecuredServices.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,9 @@ namespace SecuredServices.Core.Providers
         }
 
         private readonly IDictionary<string, int> _policiesWithRanks;
-        private readonly IList<string> _policiesList = new List<string>();
         private readonly Type _entityWithPolicies;
 
-        public IEnumerable<string> Policies => _policiesList;
+        public IEnumerable<string> Policies => _policiesWithRanks.Select(x => x.Key);
 
         public virtual int GetPolicyRank(string policy)
         {
@@ -34,7 +34,8 @@ namespace SecuredServices.Core.Providers
             foreach (var prop in policiesProps)
             {
                 var attribute = prop.GetCustomAttribute<PolicyAttribute>();
-                dictionary.Add(prop.Name, attribute.Rank);
+                var canAddPolicy = dictionary.TryAdd(prop.Name, attribute.Rank);
+                ThrowIfCantAddNewPolicy(canAddPolicy);
             }
             return dictionary;
         }
@@ -43,6 +44,16 @@ namespace SecuredServices.Core.Providers
         {
             return _entityWithPolicies.GetFields()
                 .Where(x => x.GetCustomAttribute<PolicyAttribute>() is not null);
+        }
+
+        /// <exception cref="FailedUsePolicyException"></exception>
+        private void ThrowIfCantAddNewPolicy(bool canAddPolicy, string errorMessage = null)
+        {
+            if (!canAddPolicy)
+            {
+                errorMessage = errorMessage ?? $"Can't be use one or more policies from current type {_entityWithPolicies.ToString()}";
+                throw new FailedUsePolicyException(errorMessage);
+            }
         }
     }
 }
